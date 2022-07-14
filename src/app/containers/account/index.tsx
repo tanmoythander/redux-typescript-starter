@@ -8,7 +8,7 @@ import {
   incrementAsync,
   incrementIfOdd,
   selectCount,
-} from '../../redux/reducers/accountSlice';
+} from '../../redux/slices/counterSlice';
 import styles from './Account.module.css';
 
 export function Account() {

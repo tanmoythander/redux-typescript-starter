@@ -8,7 +8,7 @@ import {
   incrementAsync,
   incrementIfOdd,
   selectCount,
-} from '../../redux/reducers/counterSlice';
+} from '../../redux/slices/counterSlice';
 import styles from './Counter.module.css';
 
 export function Counter() {
