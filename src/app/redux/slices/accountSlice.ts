@@ -2,11 +2,13 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../store';
 import { fetchAmount } from './amountAPIDummy';
 
+type QueueState = 'idle' | 'loading' | 'failed';
+
 export interface AccountState {
 	balance: number;
 	savings: number;
 	loans: number;
-	queueStatus: 'idle' | 'loading' | 'failed';
+	queueStatus: QueueState;
 }
 
 const initialState: AccountState = {
@@ -56,6 +58,7 @@ export const accountSlice = createSlice({
 				state.savings += action.payload;
 			}
 		},
+		// private action
 		withdrawFromSavings: (state, action: PayloadAction<number>) => {
 			if (action.payload <= state.savings) {
 				// fund is available for withdrawal from savings
@@ -63,6 +66,7 @@ export const accountSlice = createSlice({
 				state.balance += action.payload;
 			}
 		},
+		// private action
 		receiveLoan: (state, action: PayloadAction<number>) => {
 			state.loans += action.payload;
 			state.balance += action.payload;
@@ -73,6 +77,10 @@ export const accountSlice = createSlice({
 				state.loans -= action.payload;
 				state.balance -= action.payload;
 			}
+		},
+		// private action
+		setQueueStatus: (state, action: PayloadAction<QueueState>) => {
+			state.queueStatus = action.payload;
 		}
 	},
 	extraReducers: (builder) => {
@@ -81,7 +89,7 @@ export const accountSlice = createSlice({
 				state.queueStatus = 'loading';
 			})
 			.addCase(withdrawFromSavingsA.fulfilled,
-				(state, action) => {
+				(state, action: PayloadAction<number>) => {
 					state.queueStatus = 'idle';
 					if (action.payload <= state.savings) {
 						// fund is available for withdrawal from savings
@@ -96,7 +104,7 @@ export const accountSlice = createSlice({
 				state.queueStatus = 'loading';
 			})
 			.addCase(receiveLoanA.fulfilled,
-				(state, action) => {
+				(state, action: PayloadAction<number>) => {
 					state.queueStatus = 'idle';
 					state.loans += action.payload;
 					state.balance += action.payload;
@@ -131,14 +139,26 @@ export const withdrawFromSavingsB =
 			// demo usage of getState()
 			const cLoans = selectLoans(getState());
 			console.log(cLoans);
-			const res = await fetchAmount(amount);
-			dispatch(accountSlice.actions.withdrawFromSavings(res.amount));
+			dispatch(accountSlice.actions.setQueueStatus('loading'));
+			try {
+				const res = await fetchAmount(amount);
+				dispatch(accountSlice.actions.withdrawFromSavings(res.amount));
+				dispatch(accountSlice.actions.setQueueStatus('idle'));
+			} catch (err) {
+				dispatch(accountSlice.actions.setQueueStatus('failed'));
+			}
 		};
 export const receiveLoanB =
 	(amount: number): AppThunk =>
 		async (dispatch) => {
-			const res = await fetchAmount(amount);
-			dispatch(accountSlice.actions.receiveLoan(res.amount));
+			dispatch(accountSlice.actions.setQueueStatus('loading'));
+			try {
+				const res = await fetchAmount(amount);
+				dispatch(accountSlice.actions.receiveLoan(res.amount));
+				dispatch(accountSlice.actions.setQueueStatus('idle'));
+			} catch (err) {
+				dispatch(accountSlice.actions.setQueueStatus('failed'));
+			}
 		}
 
 // reducer

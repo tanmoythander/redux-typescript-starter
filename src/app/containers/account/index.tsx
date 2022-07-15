@@ -2,65 +2,110 @@ import React, { useState } from 'react';
 
 import { useSelector, useDispatch } from '../../redux/hooks';
 import {
-  decrement,
-  increment,
-  incrementByAmount,
-  incrementAsync,
-  incrementIfOdd,
-  selectCount,
-} from '../../redux/slices/counterSlice';
+  deposit,
+  withdraw,
+  depositToSavings,
+  withdrawFromSavingsA,
+  receiveLoanB,
+  payLoan,
+  selectBalance,
+  selectSavings,
+  selectLoans,
+  selectQueueStatus
+} from '../../redux/slices/accountSlice';
 import styles from './Account.module.css';
 
 export function Account() {
-  const count = useSelector(selectCount);
+  const balance = useSelector(selectBalance);
+  const savings = useSelector(selectSavings);
+  const loans = useSelector(selectLoans);
+  const queueStatus = useSelector(selectQueueStatus);
   const dispatch = useDispatch();
-  const [incrementAmount, setIncrementAmount] = useState('2');
+  const [balanceOpAmount, setBalanceOpAmount] = useState('10000');
+  const [savingsOpAmount, setSavingsOpAmount] = useState('1000');
+  const [loansOpAmount, setLoansOpAmount] = useState('100');
 
-  const incrementValue = Number(incrementAmount) || 0;
+  const balanceOpValue = Number(balanceOpAmount) || 0;
+  const savingsOpValue = Number(savingsOpAmount) || 0;
+  const loansOpValue = Number(loansOpAmount) || 0;
 
   return (
-    <div className={styles.tempBorder}>
+    <div>
       <div className={styles.row}>
+        <div className={styles.statContainer}>
+          <p className={styles.balanceLabel}>Balance</p>
+          <span className={styles.balance}>{balance}</span>
+        </div>
+        <div className={styles.statContainer}>
+          <p className={styles.savingsLabel}>Savings</p>
+          <span className={styles.savings}>{savings}</span>
+        </div>
+        <div className={styles.statContainer}>
+          <p className={styles.loansLabel}>Loans</p>
+          <span className={styles.loans}>{loans}</span>
+        </div>
+      </div>
+      <div className={styles.row}>
+        <span className={styles.asyncStatus}>Async Status: {queueStatus}</span>
+      </div>
+      <div className={styles.row}>
+        <input
+          className={styles.textbox}
+          aria-label="Set balance operation amount"
+          value={balanceOpAmount}
+          onChange={(e) => setBalanceOpAmount(e.target.value)}
+        />
         <button
           className={styles.button}
-          aria-label="Decrement value"
-          onClick={() => dispatch(decrement())}
+          onClick={() => dispatch(deposit(balanceOpValue))}
         >
-          -
+          Deposit
         </button>
-        <span className={styles.value}>{count}</span>
         <button
           className={styles.button}
-          aria-label="Increment value"
-          onClick={() => dispatch(increment())}
+          onClick={() => dispatch(withdraw(balanceOpValue))}
         >
-          +
+          Withdraw
         </button>
       </div>
       <div className={styles.row}>
         <input
           className={styles.textbox}
-          aria-label="Set increment amount"
-          value={incrementAmount}
-          onChange={(e) => setIncrementAmount(e.target.value)}
+          aria-label="Set savings operation amount"
+          value={savingsOpAmount}
+          onChange={(e) => setSavingsOpAmount(e.target.value)}
         />
         <button
           className={styles.button}
-          onClick={() => dispatch(incrementByAmount(incrementValue))}
+          onClick={() => dispatch(depositToSavings(savingsOpValue))}
         >
-          Add Amount
+          Deposit to Savings
         </button>
         <button
           className={styles.asyncButton}
-          onClick={() => dispatch(incrementAsync(incrementValue))}
+          onClick={() => dispatch(withdrawFromSavingsA(savingsOpValue))}
         >
-          Add Async
+          Withdraw from Savings
         </button>
+      </div>
+      <div className={styles.row}>
+        <input
+          className={styles.textbox}
+          aria-label="Set loans operation amount"
+          value={loansOpAmount}
+          onChange={(e) => setLoansOpAmount(e.target.value)}
+        />
         <button
           className={styles.button}
-          onClick={() => dispatch(incrementIfOdd(incrementValue))}
+          onClick={() => dispatch(payLoan(loansOpValue))}
         >
-          Add If Odd
+          Pay Loan
+        </button>
+        <button
+          className={styles.asyncButton}
+          onClick={() => dispatch(receiveLoanB(loansOpValue))}
+        >
+          Receive Loan
         </button>
       </div>
     </div>
