@@ -2,9 +2,16 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) TS template.
 
+Following mostly used packages were also implemented to use this project, so that it can be used as a kickstart repository for general purpose react.js applications.
+
+- [Redux Persist](https://github.com/rt2zz/redux-persist)
+- [React Router](https://github.com/remix-run/react-router)
+
 ## Available Scripts
 
-In the project directory, you can run:
+### `npm install`
+
+Builds dependency tree, when executed in the project directory.
 
 ### `npm start`
 
