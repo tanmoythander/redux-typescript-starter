@@ -1,8 +1,9 @@
-# Getting Started with Create React App
+# Getting Started with Redux TypeScript Starter
 
+**Kickstart the development of your general purpose React.js application.**\
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) TS template.
 
-Following mostly used packages were also implemented to use this project as a kickstart repository for general purpose react.js applications.
+Few other frequently used packages have been implemented to this project are listed below.
 
 - [Redux Persist](https://github.com/rt2zz/redux-persist)
 - [React Router](https://github.com/remix-run/react-router)
