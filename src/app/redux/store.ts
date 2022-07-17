@@ -1,13 +1,23 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
 import counterReducer from './slices/counterSlice';
 import accountReducer from './slices/accountSlice';
 
+const persistConfig = {
+  key: 'root',
+  storage
+};
+
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
-    account: accountReducer
+    counter: persistReducer(persistConfig, counterReducer),
+    account: persistReducer(persistConfig, accountReducer)
   },
 });
+
+export const persistor = persistStore(store);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
